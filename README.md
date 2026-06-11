@@ -25,3 +25,11 @@ Public portfolio of 12-day AI Trainer Workshop. By Day 12: 6 daily notebooks + c
 
 ## Sample résumés processed: 3 / 3 successful
 ```
+## Day 4 — n8n Daily News Digest
+
+- ✅ Self-hosted n8n via Docker
+- ✅ Workflow: Schedule (7AM IST) → RSS → Gemini summariser → Gmail
+- ✅ Workflow JSON committed: [Day4_NewsDigest.json](Day4_NewsDigest.json)
+- ✅ Test email screenshot below
+
+![Test email screenshot](daily_digest_test_email.png)
