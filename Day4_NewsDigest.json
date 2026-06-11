@@ -1,0 +1,179 @@
+{
+  "name": "Daily Placement News Digest",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "228e12b4-8613-4b2e-816f-149ddfdb4d62",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://news.ycombinator.com/rss",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "df3d6500-6002-4cdd-8110-f28b1c3c2d2f",
+      "name": "RSS Read"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"Summarise these RSS items into 5 bullets for a placement coach. Mention hiring trends, layoffs, internships and tech demand.\\n\\n{{$json.items.map(i => '- ' + i.title).join('\\n')}}\"\n        }\n      ]\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        832,
+        0
+      ],
+      "id": "1196a491-2eab-4e69-8954-23a9af6a3ef2",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "DfY6VjXKjrGErGhc",
+          "name": "Header Auth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "maxItems": 3
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        624,
+        0
+      ],
+      "id": "7aed48e6-f879-4a94-b99e-3f0ab99d5f01",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "sendTo": "sathvikakonakalla14@gmail.com",
+        "subject": "=Placement News Digest — {{$now.format(\"dd MMM yyyy\")}}",
+        "emailType": "text",
+        "message": "=Good morning. Today's placement news digest:  {{ $json[\"candidates\"][0][\"content\"][\"parts\"][0][\"text\"] }}  Sent automatically by n8n at 7:00 AM IST.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1040,
+        0
+      ],
+      "id": "944d95d5-c556-4604-b9f8-6707b5019158",
+      "name": "Send a message",
+      "webhookId": "370e68cd-0f40-4a3b-9444-edab7ef98dc5",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "hOjTHPNtiybQ2Cfj",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 7 * * *"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "07fe72bb-0e64-4bb8-9070-6b49ab90049d",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        []
+      ]
+    },
+    "RSS Read": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "5f5b377d-37f2-458d-94d3-2149080df1f2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8ba8a142db034ce1265f46b226ad26bee3c99bd574c200e527a241ee74946fb2"
+  },
+  "nodeGroups": [],
+  "id": "SMMPmQfxVMh20bhd",
+  "tags": []
+}
