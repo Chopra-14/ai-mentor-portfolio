@@ -157,3 +157,4 @@ Job Description:
             )
 
             st.code(str(e))
+api_key = st.secrets.get('GEMINI_API_KEY', None) or st.text_input('Gemini API key', type='password')
