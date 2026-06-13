@@ -247,4 +247,8 @@ Resume:\n{resume}\n\nJob Description:\n{jd}"""
             except Exception as e:
                 st.error("Gemini returned an error. Please retry in 30 seconds.", icon="🚨")
                 with st.expander("Error details"):
+<<<<<<< HEAD
                     st.code(str(e))
+=======
+                    st.code(str(e))
+>>>>>>> 57e4b960c5c55695dcdf97502f6ee577c2ff66b4
